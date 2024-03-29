@@ -1,0 +1,37 @@
+name: Zip And Push the file
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  zip-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Update JSON file
+        run: |
+          jq --arg version "${{ github.event.release.tag_name }}" \
+             '.version |= $version' manifest.json > tmp.json && mv tmp.json manifest.json
+
+
+      - name: Zip files
+        run: |
+          zip GoogleChatTranslator.zip -r * -x "google-appscript/*"
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHubAction"
+          git config --global user.email "GitHubAction@github.com"
+          git add GoogleChatTranslator.zip manifest.json; 
+          git commit -m "add/update GoogleChatTranslator.zip and manifest.json"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: leoarokiaraj/GoogleChatTranslator
+          branch: main
+          force: true

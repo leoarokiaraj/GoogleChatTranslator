@@ -1,0 +1,45 @@
+{
+  "name": "Google Chat Translator",
+  "version": "0.0.27",
+  "description": "Extension to translate google chat messages",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*",
+        "https://chat.google.com/*"
+      ],
+      "js": [
+        "content/content-script.js"
+      ],
+      "css": [
+        "content/content-style.css"
+      ],
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "assets/GoogleChatTranslatorLogo.png",
+    "48": "assets/GoogleChatTranslatorLogo.png",
+    "128": "assets/GoogleChatTranslatorLogo.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "assets/GoogleChatTranslatorLogo.png",
+      "24": "assets/GoogleChatTranslatorLogo.png",
+      "32": "assets/GoogleChatTranslatorLogo.png"
+    },
+    "default_title": "Google Chat Translator",
+    "default_popup": "popup/popup.html"
+  },
+  "manifest_version": 3
+}
