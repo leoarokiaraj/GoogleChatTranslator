@@ -1,7 +1,4 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  chrome.tabs.sendMessage(tabId, {
-    type: "Loading",
-  });
   if (
     tab.url.includes("https://mail.google.com/chat/u/0/#chat") &&
     changeInfo.status === "complete"

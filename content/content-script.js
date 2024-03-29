@@ -3,14 +3,19 @@ const TRANSLATE_URL =
 const SENDERID = "CHAT_CONTENT";
 
 const PostMessageToChatContentFunc = (messageIFrame) => {
-  if (messageIFrame) {
-    messageIFrame.contentWindow.postMessage(
-      {
-        sender: SENDERID,
-      },
-      "*"
-    );
+  try {
+    if (messageIFrame && messageIFrame.contentWindow) {
+      messageIFrame.contentWindow.postMessage(
+        {
+          sender: SENDERID,
+        },
+        "*"
+      );
+    }
+  } catch (error) {
+    console.log(error)
   }
+
 };
 
 const FetchTranslationText = async (translateLang, translateText) => {
@@ -68,8 +73,14 @@ window.addEventListener("message", (event) => {
   if (event.data.sender == SENDERID) {
     const messageDocument = event.currentTarget.document;
 
-    const creatorID = messageDocument
-      .getElementsByTagName("c-wiz")[0]
+  
+    const dataElement = messageDocument.getElementsByTagName("c-wiz")[0]
+
+    if (!(dataElement && dataElement.hasAttribute("data-p"))){
+      return;
+    }
+
+    const creatorID = dataElement
       .getAttribute("data-p")
       .split("human/")[1]
       .split(",")[0]
@@ -86,22 +97,25 @@ window.addEventListener("message", (event) => {
         "div:nth-child(3) > div > div > div > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div"
       );
 
-      if (messageNode && messageNode.childNodes > 1 && (
+      if (messageNode && messageNode.childNodes.length > 1 && (
         !messageNode.childNodes[4] ||
         (messageNode.childNodes[4]?.innerHTML !== "See Translation" &&
           messageNode.childNodes[4]?.innerHTML !== "Undo Translation"))
       ) {
-        const spanNode = document.createElement("span");
         const updateMsg = messageNode.childNodes[0]
           .querySelector("div")
           .querySelector("div");
-        spanNode.textContent = "See Translation";
-        spanNode.setAttribute("class", "seeTranslation");
-        spanNode.setAttribute("original-text", updateMsg.innerHTML);
-        spanNode.onclick = async () => {
-          await SeeTranslationFunc(messageNode, spanNode, updateMsg);
-        };
-        messageNode.appendChild(spanNode);
+        if (updateMsg) {
+          const spanNode = document.createElement("span");
+          spanNode.textContent = "See Translation";
+          spanNode.setAttribute("class", "seeTranslation");
+          spanNode.setAttribute("original-text", updateMsg.innerHTML);
+          spanNode.onclick = async () => {
+            await SeeTranslationFunc(messageNode, spanNode, updateMsg);
+          };
+          messageNode.appendChild(spanNode);
+        }
+        
       }
     }
   }
