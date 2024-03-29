@@ -86,7 +86,7 @@ window.addEventListener("message", (event) => {
         "div:nth-child(3) > div > div > div > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div"
       );
 
-      if (messageNode && (
+      if (messageNode && messageNode.childNodes > 1 && (
         !messageNode.childNodes[4] ||
         (messageNode.childNodes[4]?.innerHTML !== "See Translation" &&
           messageNode.childNodes[4]?.innerHTML !== "Undo Translation"))
