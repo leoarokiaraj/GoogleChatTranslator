@@ -38,7 +38,7 @@ const SeeTranslationFunc = async (messageNode, spanNode, updateMsg) => {
   spanNode.onclick = ()=>{ return; }
   console.log('trnaslate click')
 
-  if (messageNode.childNodes[4]?.innerHTML === "See Translation") {
+  if (messageNode.lastChild?.innerHTML === "See Translation") {
     spanNode.classList.add("seeTranslationLoading");
 
     let translateLang = "english";
@@ -97,14 +97,24 @@ window.addEventListener("message", (event) => {
         "div:nth-child(3) > div > div > div > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div"
       );
 
-      if (messageNode && messageNode.childNodes.length > 1 && (
-        !messageNode.childNodes[4] ||
-        (messageNode.childNodes[4]?.innerHTML !== "See Translation" &&
-          messageNode.childNodes[4]?.innerHTML !== "Undo Translation"))
+      if (messageNode && messageNode.childNodes.length > 1 && 
+        (messageNode.lastChild.innerHTML !== "See Translation" &&
+          messageNode.lastChild.innerHTML !== "Undo Translation")
       ) {
-        const updateMsg = messageNode.childNodes[0]
+
+        const updateMsgNode = messageNode.childNodes[0]
+          .querySelector("div")
+        let updateMsg = null;
+        if(updateMsgNode.childElementCount > 1) {
+          updateMsg = messageNode.childNodes[0]
+          .querySelector("div").childNodes[1]
+        }
+        else {
+          updateMsg = messageNode.childNodes[0]
           .querySelector("div")
           .querySelector("div");
+        }
+
         if (updateMsg) {
           const spanNode = document.createElement("span");
           spanNode.textContent = "See Translation";
