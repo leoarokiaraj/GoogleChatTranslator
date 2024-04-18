@@ -1,6 +1,6 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (
-    tab.url.includes("https://mail.google.com/chat/u/0/#chat") &&
+    tab.url.includes("https://mail.google.com/chat") &&
     changeInfo.status === "complete"
   ) {
     chrome.tabs.sendMessage(tabId, {
@@ -12,7 +12,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.tabs.query({}, function (tabs) {
 
   tabs.forEach((tab) => {
-    if (tab.url.includes("https://mail.google.com/chat/u/0/#chat")) {
+    if (tab.url.includes("https://mail.google.com/chat")) {
       chrome.tabs.reload(tab.id)
       let currentLang = "english";
       chrome.storage.sync.get("TranslateLang", function (res) {
